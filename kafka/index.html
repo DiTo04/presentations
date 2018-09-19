@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Presentation</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/moon.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <section about="Title">
+                    <h2>Kafka</h2>
+                    <h4>A third party data stream</h4>
+                </section>
+                <section about="What is Kafka?">
+                    <section>
+                        <h2>What is it?</h2>
+                    </section>
+                    <section>
+                        <h4>The glue between data<br>producers and consumers</h4>
+                        <img
+                            width="60%"
+                            style="background-color: white;"
+                            data-src="https://kafka.apache.org/20/images/kafka-apis.png"/>
+                    </section>
+                    <section>
+                        <h4>Inside the cluster</h4>
+                        <img
+                                width="60%"
+                                style="background-color: white;"
+                                data-src="https://engineering.bitnami.com/images/kafka/kafka.png"/>
+                    </section>
+                    <section>
+                        <h4>An append only log</h4>
+                        <img
+                            width="60%"
+                            style="background-color: white;"
+                            data-src="https://kafka.apache.org/20/images/log_consumer.png"/>
+                    </section>
+                    <section>
+                        <h4>Partitioning</h4>
+                        <img
+                            width="60%"
+                            style="background-color: white;"
+                            data-src="https://kafka.apache.org/20/images/log_anatomy.png"/>
+                    </section>
+                    <section>
+                        <h4>Consumer groups</h4>
+                        <img
+                            width="60%"
+                            style="background-color: white;"
+                            data-src="https://kafka.apache.org/20/images/consumer-groups.png"/>
+                    </section><section>
+                    <h2>Buzzwords</h2>
+                    <ul>
+                        <li>Broker</li>
+                        <li>Producer</li>
+                        <li>Consumers</li>
+                        <li>Topic</li>
+                        <li>Stream</li>
+                        <li>Facts/Events</li>
+
+                    </ul>
+                </section>
+                </section>
+                <section about="PoC">
+                    <h2>The PoC</h2>
+                    <ul>
+                        <li>Publish facts from RTC</li>
+                        <li>Consume facts outside of RTC</li>
+                        <li>Create Auto tests for data publishing</li>
+                        <li>Create scripts for setting up a Kafka cluster</li>
+                        <li>Try to integrate this into framework</li>
+                    </ul>
+                </section>
+                <section about="Publishing">
+                    <section>
+                        <h3>Publishing</h3>
+                        <pre><code class="java" data-trim>
+                            package com.cinnober.rtc.sdk.service.publishing;
+
+                            /**
+                             * Publishes objects to external streams for example Kafka.
+                             */
+                            public interface ExternalPublisher {
+                                /**
+                                 * Publishes the given object to external streams.
+                                 * @param object The object to publish.
+                                 * @throws IOException if the publication fails.
+                                 */
+                                void publish(MsgObject object) throws IOException;
+                            }
+                        </code></pre>
+                    </section>
+                    <section>
+                        <pre><p>KafkaPublisher.java</p></pre>
+                        <pre><code class="java" data-trim data-noescape style="font-size: 12pt">
+                            class KafkaPublisher implements ExternalPublisher {
+                                ...
+                                @Override
+                                public void publish(MsgObject object) throws IOException {
+                                    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                    jsonCodec.encode(object, outputStream);
+                                    final String json = outputStream.toString("UTF-8");
+                                    final String topic = config.getTopic(object.getClass());
+                                    final ProducerRecord&ltString, String&gt record = new ProducerRecord&lt&gt(topic, json);
+                                    kafkaProducer.send(record);
+                                }
+                            }
+                        </code></pre>
+                    </section>
+                    <section>
+                        <pre><p>FwConfiguration.xml</p></pre>
+                        <pre><code class="xml" data-trim data-noescape style="font-size: 11pt">
+                            &ltFunctionalPartition id="PM" encoding="10" wrappedEncoding="67"&gt
+                                ...
+                                &ltKafkaPublisherConfig enabled="false" connections="localhost:9092"&gt
+                                    &lttopic type="PositionEvent"  topic="positions"/&gt
+                                    &lttopic type="TradeEvent"     topic="trades"/&gt
+                                &lt/KafkaPublisherConfig>
+                                ...
+                            &lt/FunctionalPartition&gt
+                        </code></pre>
+                        <pre><p>KafkaPublisherModule.java</p></pre>
+                        <pre><code class="java" data-trim data-noescape style="font-size: 11pt">
+                            @Provides
+                            @Singleton
+                            private KafkaProducer&ltString, String&gt provideKafkaProducer() throws UnknownHostException {
+                                final Properties props = new Properties();
+                                props.put("client.id", InetAddress.getLocalHost().getHostName());
+                                props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.connections);
+                                props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+                                props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+                                return new KafkaProducer<>(props);
+                            }
+                        </code></pre>
+                    </section>
+                </section>
+                <section about="Consuming">
+                    <section>
+                        <h3>Consuming</h3>
+                        <pre><code class="java" data-trim>
+                            KafkaConsumer&ltString,String&gt consumer = new KafkaConsumer&lt&gt()
+
+                        </code></pre>
+                    </section>
+                </section>
+                <section about="Cluster Set-up">
+                    <section>
+                        <h3>Cluster Set-up</h3>
+                            <ul>
+                                <li>./kafka_start.sh
+                                    <ul>
+                                        <li>Starts ZooKeeper</li>
+                                        <li>Starts 3 Kafka brokers</li>
+                                    </ul>
+                                </li>
+                                <li>./kafka_stop.sh</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h3>Configuration and Logging</h3>
+                        <ul>
+                            <li>Properties
+                                <ul>
+                                    <li>environments/developer/cfg/kafka/broker.properties</li>
+                                    <li>environments/developer/cfg/kafka/zookeeper.properties</li>
+                                </ul>
+                            </li>
+                            <li>Logging
+                                <ul>
+                                    <li>environments/developer/deployment/system/kafka/</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Problems</h3>
+                        <ul>
+                            <li>Cygwin + Kafka = 👎</li>
+                        </ul>
+                    </section>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+			// Include history in the address bar
+			history: true,
+			// Dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
