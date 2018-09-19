@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Routing 2.0</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+               <h1>Routing 2.0</h1>
+            </section>
+				<section>
+               <h2>What?</h2>
+               <ul>
+                  <li>New module that implements common routing functionality</li>
+                  <li>Integrated in Position domain</li>
+               </ul>
+            </section>
+            <section>
+               <h2>Why?</h2>
+               <ul>
+                  <li>Different implementations in all domains</li>
+                  <li>Complex: implements framework level functionality on application level</li>
+                  <li>Sends updates on inbound channels</li>
+               </ul>
+            </section>
+            <section>
+               <h2>How?</h2>
+               <ul>
+                  <li>Using message queue</li>
+                  <li>Still provides guarantees that routing updates are received before responding</li>
+               </ul>
+            </section>
+            <section>
+               <img src="./routing2.png" alt="">
+            </section>
+            <section>
+               <h2>Code?</h2>
+               <a href="https://gitrepo.cinnober.com/clearing/rtc/tree/develop/common/routing/src/main/java/com/cinnober/common/routing">GitLab</a>
+            </section>
+            <section>
+               <h2>TODO?</h2>
+               <ul>
+                  <li>Implement in Risk and Market Data gateways</li>
+                  <li>Out of scope: define ids for message queues in one place</li>
+                  <li>Out of scope: define error code ranges in one place</li>
+                  <li>Out of scope: extend functionality to distribute other data?</li>
+               </ul>
+            </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+      <script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+            history: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
