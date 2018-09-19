@@ -157,7 +157,18 @@
                         <h3>Consuming</h3>
                         <pre><code class="java" data-trim>
                             KafkaConsumer&ltString,String&gt consumer = new KafkaConsumer&lt&gt()
-
+                            while(true) {
+                                ConsumerRecords&ltString, String&gt records =
+                                        positionConsumer.poll(Duration.ofMillis(200));
+                                for (ConsumerRecord&ltString, String&gt record: records) {
+                                    byte[] bytes = record.value().getBytes();
+                                    Object object = JSON_CODEC
+                                            .decode(new ByteArrayInputStream(bytes));
+                                    if (object instanceof PositionEvent) {
+                                        // Handle PositionEvent
+                                    }
+                                }
+                            }
                         </code></pre>
                     </section>
                 </section>
