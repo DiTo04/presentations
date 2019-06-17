@@ -1,3 +1,6 @@
+---
+permalink: /
+---
 David's Public Presentations
 ============================
 Here you can find presentations created by David.
