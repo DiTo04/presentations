@@ -81,16 +81,16 @@
                             WORKDIR /opt/app
                             CMD ["/opt/app/executable", "anArgument"]
                         </code></pre>
+                        Command:
+                        <pre><code class="bash" data-trim>
+                            docker build .
+                        </code></pre>
                     </section>
                 </section>
                 <section>
                     <section>
                         <h2>Docker-Compose</h2>
-                        <img  width="60%"
-                              src="https://www.docker.com/sites/default/files/d8/styles/large/public/2018-11/container-what-is-container.png?itok=vle7kjDj">
-                    </section>
-                    <section>
-                        <h2>docker-compose.yml</h2>
+                        docker-compose.yml
                         <pre><code class="Dockerfile" data-trim>
                                 version: '3'
                                 services:
@@ -101,6 +101,39 @@
                                   redis:
                                     image: "redis:alpine"
                             </code></pre>
+                        Command:
+                        <pre><code class="bash" data-trim>
+                            docker-compose up
+                        </code></pre>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Orchestration</h2>
+                        <img width="60%" src="https://mapr.com/products/kubernetes/assets/k8s-logo.png">
+                    </section>
+                    <section>
+                        <h2>What is it?</h2>
+                        <img width="60%" src="https://devonblog.com/wp-content/uploads/2019/03/Affordable-Kubernetes-2-1.png">
+                    </section>
+                    <section>
+                        <h2>Key words:</h2>
+                        <ul>
+                            <li>Pod</li>
+                            <li>Deployment</li>
+
+                            <li>ConfigMap</li>
+                            <li>Secrets</li>
+
+                            <li>Service</li>
+                            <li>Ingress</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Infrastructure as Code</h2>
+                        <h4>Why?</h4>
                     </section>
                 </section>
 			</div>
