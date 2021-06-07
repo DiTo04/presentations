@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Presentation</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/blood.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <section>
+                    <h2>☁️ & 👩‍💻🛠</h2>
+                    <p>
+                        med David
+                    </p>
+                </section>
+				<section>
+                   <h2>The Cloud-Native citizen</h2>
+                </section>
+                <section>
+                    <h3>Definition</h3>
+                    <p>
+                        <em>
+                            Cloud native technologies empower organizations to build and run <b>scalable</b> applications
+                            in modern, <b>dynamic environments</b> such as public, private, and hybrid clouds.
+                            Containers, service meshes, microservices, immutable infrastructure, and declarative APIs
+                            exemplify this approach.
+                        </em>
+                    </p>
+                    <p>
+                        <em>These techniques enable <b>loosely coupled systems</b> that are <b>resilient, manageable, and observable...</b></em>
+                    </p>
+                    <img src="https://github.com/cncf/artwork/raw/master/other/cncf/horizontal/color/cncf-color.svg" style="height: 90px">
+                </section>
+                <section>
+                    <section>
+                        <h3>Scalable</h3>
+                        <p>
+                            <em>Your services should automatically scale by adding more Instances/Pods</em>
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Dynamic Environment</h3>
+                        <p>
+                            <em>You do not know where you or your dependencies run. Use Service Discovery</em>
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Resilient</h3>
+                        <p>
+                            <em>You should always be able to handle the loss of resources</em>
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Observable</h3>
+                        <ul>
+                            <li>Logs to Stdout</li>
+                            <li>Prometheus Metrics over HTTP</li>
+                            <li>Tracing & Spans if configured (OpenTelemetry)</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Development Flow</h2>
+                        <img src="images/dev-flow.svg">
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Docker-Compose</h2>
+                        <pre><code class="yaml" data-trim>
+                                version: '3'
+                                services:
+                                  db:
+                                    image: "postgres"
+                                    ports:
+                                      - "5432:5432"
+                                  redis:
+                                    image: "redis:alpine"
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>KubeFwd</h2>
+                        <img src="https://github.com/txn2/kubefwd/blob/master/kubefwd_ani.gif?raw=true">
+                    </section>
+                    <section>
+                        <h2>Telepresence</h2>
+                        <img src="https://image.slidesharecdn.com/telepresencekubeconeu2019-190523122506/95/telepresence-fast-development-workflows-for-kubernetes-12-638.jpg?cb=1558614387">
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h3>Application Artifacts</h3>
+                        <ul>
+                            <li>OCI-Images</li>
+                            <li>Kubernetes Definitions</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>OCI-Image generation</h3>
+                        <ul>
+                            <li>Jib/Gradle/Maven</li>
+                            <li>Docker</li>
+                            <li>Buildah</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Kubernetes Definitions</h3>
+                        <ul>
+                            <li>Helm</li>
+                            <li>(Kustomize)</li>
+                        </ul>
+                    </section>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+      <script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+            // Include history in the address bar
+            history: true,
+            // Dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
